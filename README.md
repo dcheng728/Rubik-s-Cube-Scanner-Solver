@@ -37,6 +37,8 @@ The Project consists of three parts:<p></p>
 
 ### 	1. Scanning the faces of the cube
 
+![video_example](video_example.gif)
+
 To reduce redundant calculation, the GUI has a ROI (The region bounded by the square in the GUI) which it will search for faces of the cube. In order to scan the faces of the cube, the following procedure is followed:
 
 1. Gray the ROI of the camera image
