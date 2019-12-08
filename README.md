@@ -60,7 +60,9 @@ To allow the user to visualize the solution of the program, a set of animations 
 
 ![](-R.gif)
 
-The Animation is produced by the VPython library. All the cubes are created and animated in the 3-D visualization interface in VPython, and exported to videos using screenrecording.
+The Animation is produced by the VPython library. All the cubes are created and animated in the 3-D visualization interface in VPython, and exported to videos using screenrecording. By recording the animation of each individual move, and putting them together will create a complete solving process of a Rubik's Cube:
+
+![](animation_example.gif)
 
 ##Thank You
  Thank you Herbert Kociemba, ([check out his git-hub](https://github.com/hkociemba/RubiksCube-TwophaseSolver)), for the work you have done in creating a solver class for Rubik's Cube under 20 moves, it is fast and efficient and incredible! Without your contribution in [RubiksCube-TwophaseSolver](https://github.com/hkociemba/RubiksCube-TwophaseSolver), this project would not be possible.
