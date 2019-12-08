@@ -1,4 +1,7 @@
 # Rubik's Cube Scanner & Solver
+
+![video_example](video_example.gif)
+
 This project is a GUI that allows the user to take a rubik's cube, scan it, and then be given a solution to the Rubik's cube. It recognizes the colors on the Rubik's cube using OpenCV image processing algorithms and gets the solution from a server.
 ## Instructions
 ### Dependencies required:
@@ -36,8 +39,6 @@ The Project consists of three parts:<p></p>
 <p></p>
 
 ### 	1. Scanning the faces of the cube
-
-![video_example](video_example.gif)
 
 To reduce redundant calculation, the GUI has a ROI (The region bounded by the square in the GUI) which it will search for faces of the cube. In order to scan the faces of the cube, the following procedure is followed:
 
