@@ -26,7 +26,7 @@ After all sides of the cube has been entered, click "Solve" to get the solution,
 ## Overview
 ### A screenshot of the GUI:
 
-![GUI](GUI.png)
+![GUI](GUI_example.png)
 
 The Project consists of three parts:<p></p>
 
