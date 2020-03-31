@@ -32,8 +32,8 @@ scanner_block_id = [0 for num in range(200000)]
 scanner_pos = [0,0,0,0,0,0,0,0,0]
 colorpick_id = [0 for i in range(6)]
 curcol = None
-global cameraloop
-cameraloop = [1]
+global cameraOn
+cameraOn = True
 t = ("U", "R", "F", "D", "L", "B")
 cols = ("yellow", "green", "red", "white", "blue", "orange")
 scanner_color = ["white","white","white","white","white","white","white","white","white"]
@@ -41,10 +41,8 @@ thecolor = ["white","white","white","white","white","white","white","white","whi
 ################################################## Opencv Functions ######################################################
 
 def ev(img,x,y,layer): #Evaluates the average value inside a rectangle of one color channel
-    
     #(x,y) is the coordinate of the center of the rectangle
     #w and l are the width and lendth of the rectangle
-    
     w = 10
     h = 10
     a = list(range(x-w, x+w))
@@ -59,26 +57,22 @@ def ev(img,x,y,layer): #Evaluates the average value inside a rectangle of one co
     return int(tot/t)
 
 def draw_aim(image,x1,y1,x2,y2,w,b,g,r):
-    
     #Draws a box aim on an image to tell the user where to put the rubik's cube
-    
     cv2.line(image,(x1,y1),(x1,y1+w),(b,g,r),2)
     cv2.line(image,(x1,y1),(x1+w,y1),(b,g,r),2)
-    
+
     cv2.line(image,(x2,y1),(x2,y1+w),(b,g,r),2)
     cv2.line(image,(x2,y1),(x2-w,y1),(b,g,r),2)
-    
+        
     cv2.line(image,(x1,y2),(x1,y2-w),(b,g,r),2)
     cv2.line(image,(x1,y2),(x1+w,y2),(b,g,r),2)
-    
+
     cv2.line(image,(x2,y2),(x2,y2-w),(b,g,r),2)
     cv2.line(image,(x2,y2),(x2-w,y2),(b,g,r),2)
     
 
 def cv22tkinter(cv2img):
-    
     #Converts a np.array into one that can be displayed in a tkinter label
-    
     img = cv2.cvtColor(cv2img, cv2.COLOR_BGR2RGB)
     img = Image.fromarray(img)
     img = ImageTk.PhotoImage(img)
@@ -86,11 +80,8 @@ def cv22tkinter(cv2img):
     return img
 
 def process(img):
-
     #Process an bgr image to binary 
-    
     #kernel = np.ones((3,3),np.uint8) this is an alternative way to create kernel
-    
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(2,2))
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) #Corresponding grayscale image to the input
     binary = cv2.adaptiveThreshold(gray,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY_INV,11,5) 
@@ -101,11 +92,9 @@ def process(img):
     return binary_inv
 
 def color(bgrtuple):
-    
     """
     Takes a tuple input that has (b,g,r) and return the color of that pixel
     """
-    
     bgrtuple = list(bgrtuple)
     
     b = bgrtuple[0]
@@ -149,42 +138,7 @@ def get_color_string(bgrlist):
         result_string[running] = color(tuple(bgrstring))
         running = running+1
     return result_string
-"""
-def scan_color(image,coordinates):
-    
-    #This code scans the coordinates on the image and returns a string that represents the color
-    
-    result_color = []
-    running = 0
-    while (running < 9):
- """     
-    
-"""
-def scan_color(image,coordinates):
-    #coordinates is a list that contains 9 (x,y) coordinates
-    string = [0 for num in range(9)]
-    running = 0
-    while (running < 9):
-        x = coordinates[running][0]
-        y = coordinates[running][1]
-        b = ev(image,x,y,0)
-        g = ev(image,x,y,1)
-        r = ev(image,x,y,2)
-        string[running] = str(color((b,g,r)))
-    return string
-"""
-"""
-def color_string(image,colstr):
-    string = [x for 
-    for num in range(9):
-        xac = colstr[num][0]
-        yac = colstr[num][1]
-        b = ev(image,xac,yac,0)
-        g = ev(image,xac,yac,1)
-        r = ev(image,xac,yac,2)
-        string[num] = str(color((b,g,r)))
-    return string
-"""
+
 def create_9box(cords_list,image_height,image_width):
     """
     Takes a list of (x,y) coordinates and create a box at each coordinate.
@@ -396,8 +350,6 @@ def approx_is_square(approx, SIDE_VS_SIDE_THRESHOLD=0.70, ANGLE_THRESHOLD=20, RO
     return True
         
 # ################################################ Diverse functions ###################################################
-
-
 def show_text(txt):
     """Displays messages."""
     print(txt)
@@ -585,17 +537,15 @@ def capture():
     create_string_rects(width,thecolor)
 
 def tfcam():
-    cameraloop[0] = 2
-    cap.release()
+    global cameraOn
+    cameraOn = False
     
 def stcam():
-    cap = cv2.VideoCapture(0)
-    cameraloop[0] = 1
+    global cameraOn
+    cameraOn = True
     
 ########################################################################################################################
-
 # ################################### Edit the facelet colors ##########################################################
-
 
 def click(event):
     """Defines how to react on left mouse clicks"""
@@ -638,10 +588,10 @@ brandom = Button(text="Random", height=1, width=10, relief=RAISED, command=rando
 brandom_window = canvas.create_window(10 + 10.5 * width, 10 + 8.5 * width, anchor=NW, window=brandom)
 
 
-btfcam = Button(text="***", height = 1,width = 10, relief=RAISED, command=tfcam)
+btfcam = Button(text="Turn off Cam", height = 1,width = 10, relief=RAISED, command=tfcam)
 btfcam_window = canvas.create_window(10 + 10.5 * width, 10 + 7 * width, anchor=NW, window=btfcam)
 
-bstcam = Button(text="*", height = 1,width = 10, relief=RAISED, command=stcam)
+bstcam = Button(text="Start Cam", height = 1,width = 10, relief=RAISED, command=stcam)
 bstcam_window = canvas.create_window(10 + 10.5 * width, 10 + 9 * width, anchor=NW, window=bstcam)
 
 
@@ -676,78 +626,59 @@ create_colorpick_rects(width)
 ########################################################################################################################
 
 cap = cv2.VideoCapture(0)
+cap.set(3,1280)
+cap.set(4,720)
 
 
 while True:
-    if (cameraloop[0] == 2):
-        break
-    ret,image = cap.read()
-    
-    image = cv2.flip( image, 1 )
-    
-    x,y = image.shape[0:2]
-    
-    image = cv2.resize(image, (int(y/2),int(x/2)))
+    if (cameraOn == False):
+        pass
+    else:
+        ret,image = cap.read()
+        image = cv2.flip( image, 1 )
+        x,y = image.shape[0:2]
+        image = cv2.resize(image, (int(y/2),int(x/2)))
+        b,g,r = cv2.split(image)
+        recnum = 0
+        cords = [[0 for col in range(2)] for row in range(9)]
+        dilation = process(image)
 
-    b,g,r = cv2.split(image)
-    
-    recnum = 0
+        ig, contours, hierarchy = cv2.findContours(dilation,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+        for cnt in contours:
+            approx = cv2.approxPolyDP(cnt,0.12*cv2.arcLength(cnt,True),True)
+            x = approx.ravel()[0]
+            y = approx.ravel()[1]
 
-    cords = [[0 for col in range(2)] for row in range(9)]
-
-    dilation = process(image)
-
-    ig, contours, hierarchy = cv2.findContours(dilation,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-    for cnt in contours:
-        approx = cv2.approxPolyDP(cnt,0.12*cv2.arcLength(cnt,True),True)
-        x = approx.ravel()[0]
-        y = approx.ravel()[1]
-
-        if (len(approx) == 4 and 245<x<395 and 105<y<255):
-            
-            #Approx has 4 (x,y) coordinates, where the first is the top left,and
-            #the third is the bottom right. Findind the mid point of these two coordinates
-            #will give me the center of the rectangle
-            
-            recnum = recnum + 1
-            
-            x1=approx[0,0,0]
-            y1=approx[0,0,1]
-            
-            x2=approx[(approx.shape[0]-2),0,0] #X coordinate of the bottom right corner
-            y2=approx[(approx.shape[0]-2),0,1] 
-            
-
-            xavg = int((x1+x2)/2)
-            yavg = int((y1+y2)/2)
-
-
-            if (recnum > 9):
-                break
-            
-            cords = list(cords)
-            cords[recnum-1] = [xavg,yavg]
-            
-            if (approx_is_square(approx) == True):
+            if (len(approx) == 4 and 245<x<395 and 105<y<255):
+                #Approx has 4 (x,y) coordinates, where the first is the top left,and
+                #the third is the bottom right. Findind the mid point of these two coordinates
+                #will give me the center of the rectangle
+                recnum = recnum + 1
                 
-                cv2.circle(image,(xavg,yavg),15,(255,255,255),5)
-                #cv2.putText(image,str(b[yavg,xavg])+str(g[yavg,xavg])+str(r[yavg,xavg]),(100,recnum*20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255))
-                #cv2.drawContours(image, [approx],0,(0,0,255),2)
-            if (recnum == 9 and approx_is_square(approx) == True):
-                string = get_string(cords)
-                color_string = get_average_color(image,string)
-                thecolor = get_color_string(color_string)
+                x1=approx[0,0,0]
+                y1=approx[0,0,1]
+                x2=approx[(approx.shape[0]-2),0,0] #X coordinate of the bottom right corner
+                y2=approx[(approx.shape[0]-2),0,1] 
                 
-                #print (string)
-                #print (color_string)
-                #print (thecolor)
-                create_referrence_color(image,thecolor)
-                #create_scanner_rects(width,thecolor)
-                #create_string_rects(width,thecolor)
+                xavg = int((x1+x2)/2)
+                yavg = int((y1+y2)/2)
 
-
-    #pic = create_9box(cords,image.shape[0],image.shape[1])
-
+                if (recnum > 9):
+                    break
+                cords = list(cords)
+                cords[recnum-1] = [xavg,yavg]
+                
+                if (approx_is_square(approx) == True):
+                    
+                    cv2.circle(image,(xavg,yavg),15,(255,255,255),5)
+                    #cv2.putText(image,str(b[yavg,xavg])+str(g[yavg,xavg])+str(r[yavg,xavg]),(100,recnum*20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,255))
+                    #cv2.drawContours(image, [approx],0,(0,0,255),2)
+                if (recnum == 9 and approx_is_square(approx) == True):
+                    string = get_string(cords)
+                    color_string = get_average_color(image,string)
+                    thecolor = get_color_string(color_string)
+                    
+                    create_referrence_color(image,thecolor)
 
     draw_aim(image,245,105,395,255,50,30,30,30)
 
@@ -763,7 +694,6 @@ while True:
         #break
     
     img = cv22tkinter(image)
-    print (cameraloop)
 
     panel = Label(image = img)
     panel.pack(side = "left")
